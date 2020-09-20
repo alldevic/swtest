@@ -1,0 +1,67 @@
+version: "3.4"
+
+services:
+  backend:
+    container_name: swtest_backend
+    env_file: .env
+    environment:
+      - DEBUGPY=${DEBUGPY}
+    user: ${CURRENT_UID}
+    build:
+      context: .
+      args:
+        - DEBUG=${DEBUG}
+      target: deploy
+    restart: on-failure
+    volumes:
+      - swtest_static:/app/static/
+      - .:/app/
+    networks:
+      # proxy:
+      private_network:
+        ipv4_address: 172.16.0.8
+
+  backend-dev:
+    container_name: swtest_backend_dev
+    env_file: .env
+    environment:
+      - DEBUGPY=${DEBUGPY}
+    user: ${CURRENT_UID}
+    build:
+      context: .
+      args:
+        - DEBUG=${DEBUG}
+      target: deploy
+    restart: on-failure
+    volumes:
+      - .:/app/
+    ports:
+      - 5678:5678
+      - 8000:8000
+    networks:
+      private_network:
+        ipv4_address: 172.16.0.5
+
+  postgres:
+    container_name: swtest_postgres
+    env_file: .env
+    image: postgres:12.3-alpine
+    restart: on-failure
+    volumes:
+      - swtest_db_data:/var/lib/postgresql/data
+    networks:
+      private_network:
+        ipv4_address: 172.16.0.6
+
+networks:
+  private_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.0.0/16
+
+volumes:
+  swtest_db_data:
+    external: True
+  swtest_static:
+    external: true
