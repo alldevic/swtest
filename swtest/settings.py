@@ -41,6 +41,7 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     'user_profile.apps.UserProfileConfig',
+    'friends.apps.FriendsConfig',
 ]
 
 if DEBUG:
