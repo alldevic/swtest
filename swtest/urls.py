@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from . import djoser_urls
 
 admin.site.site_header = "Адмнистрирование swtest"
 admin.site.site_title = "Адмнистрирование swtest"
@@ -30,7 +31,6 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,),
 )
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path(prefix, schema_view.with_ui('swagger',
@@ -38,6 +38,7 @@ urlpatterns = [
     re_path(rf'^{prefix}swtest_openapi(?P<format>\.json|\.yaml)$',
             schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path(f'{prefix}auth/', include('djoser.urls.authtoken')),
+    path(f'{prefix}', include(djoser_urls)),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:

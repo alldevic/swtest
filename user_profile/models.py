@@ -70,6 +70,7 @@ class AbstractUserProfile(AbstractBaseUser, PermissionsMixin):
 
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'nickname']
 
     class Meta:
         verbose_name = _('user')
