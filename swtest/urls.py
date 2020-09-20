@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import permissions
@@ -35,6 +35,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path(prefix, schema_view.with_ui('swagger',
                                      cache_timeout=0), name='docs-ui'),
+    re_path(rf'^{prefix}swtest_openapi(?P<format>\.json|\.yaml)$',
+            schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path(f'{prefix}auth/', include('djoser.urls.authtoken')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
