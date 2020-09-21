@@ -1,0 +1,22 @@
+name: deploy to stage
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: swtest-stage
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create .env
+        run: cp /projects/_config/swtest/.env ./.env
+      - name: Fix docker-compose
+        run: | 
+          rm -f ./docker-compose.yml
+          cp /projects/_config/swtest/docker-compose.yml ./docker-compose.yml
+      - name: Create volumes
+        run: make volumes
+      - name: Make up
+        run: make up
