@@ -33,7 +33,6 @@ su:
 logs:
 	docker logs /$(BACKEND_CONTAINER) -f
 volumes:
-	docker volume create swtest_static
 	docker volume create swtest_db_data
 
 
