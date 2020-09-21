@@ -16,7 +16,7 @@ prefix = f'api/{ver_tag}/'
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Nav Info API",
+        title="swtest API",
         default_version=ver_tag,
         contact=openapi.Contact(
             name="Nikolay Bely",

@@ -30,7 +30,7 @@ class MeViewSet(viewsets.ViewSet):
         Метод возвращает список друзей текущего пользователя
         """
 
-        user_id = request.user.id
+        user_id = int(request.user.id)
         invites = [x for x in Invite.objects
                    .only("id",
                          "from_user_id",
@@ -39,10 +39,10 @@ class MeViewSet(viewsets.ViewSet):
                    .filter(Q(from_user=user_id) | Q(to_user=user_id))]
 
         users = set(
-            [x.from_user_id for x in invites if x.to_user_id != user_id])
+            [x.from_user_id for x in invites if x.to_user_id == user_id])
 
         users.update(
-            [x.to_user_id for x in invites if x.from_user_id != user_id])
+            [x.to_user_id for x in invites if x.from_user_id == user_id])
 
         friends = User.objects.filter(id__in=users)
 
@@ -239,3 +239,34 @@ class MeViewSet(viewsets.ViewSet):
             return Response(verror.get_full_details(), status=400)
         except KeyError:
             return Response(status=400)
+
+
+class UserIdViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+
+    @action(detail=True)
+    @swagger_auto_schema(responses={
+        200: UserSerializer(many=True)
+    })
+    def friends(self, request, pk=None):
+        """
+        Метод возвращает список друзей для заданного пользователя
+        """
+        user_id = int(pk)
+        invites = [x for x in Invite.objects
+                   .only("id",
+                         "from_user_id",
+                         "to_user_id")
+                   .filter(confirmed=True)
+                   .filter(Q(from_user=user_id) | Q(to_user=user_id))]
+
+        users = set(
+            [x.from_user_id for x in invites if x.to_user_id == user_id])
+
+        users.update(
+            [x.to_user_id for x in invites if x.from_user_id == user_id])
+
+        friends = User.objects.filter(id__in=users)
+
+        serializer = UserSerializer(friends, many=True)
+        return Response(serializer.data)
