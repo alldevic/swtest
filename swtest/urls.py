@@ -39,6 +39,7 @@ urlpatterns = [
             schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path(f'{prefix}auth/', include('djoser.urls.authtoken')),
     path(f'{prefix}', include(djoser_urls)),
+    path(f'{prefix}', include('friends.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:

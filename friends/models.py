@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 
 User = get_user_model()
@@ -48,6 +49,7 @@ class Invite(models.Model):
         invites_count = Invite.objects \
             .filter(from_user__id=from_id,
                     to_user__id=to_id) \
+            .filter(~Q(id=self.id)) \
             .count()
 
         if invites_count:
@@ -57,6 +59,7 @@ class Invite(models.Model):
         rev_invites_count = Invite.objects \
             .filter(from_user__id=to_id,
                     to_user__id=from_id) \
+            .filter(~Q(id=self.id)) \
             .count()
 
         if rev_invites_count:
