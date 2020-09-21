@@ -14,7 +14,7 @@ services:
       target: deploy
     restart: on-failure
     volumes:
-      - swtest_static:/app/static/
+      - ./static:/app/static/
       - .:/app/
     networks:
       # proxy:
@@ -62,6 +62,4 @@ networks:
 
 volumes:
   swtest_db_data:
-    external: True
-  swtest_static:
     external: true
